@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import os
 import pandas as pd
 
-# 🔧 Zmieniona ścieżka logów
+# 🔧 Ścieżka do folderu logów
 log_path = "../../gnuradio/yabool2001"
 
-# Ścieżki plików binarnych
+# Ścieżki do plików binarnych
 file_bytes2chunks = os.path.join(log_path, "tx_bytes2chunks.8b")
 file_chunks2symbols = os.path.join(log_path, "tx_chunks2symbols.32fc")
 file_rrc_filter = os.path.join(log_path, "tx_rrc_filter.32fc")
@@ -21,13 +21,13 @@ print(f"Loaded {len(symbols)} symbols")
 print(f"Loaded {len(filtered)} filtered samples")
 
 # =====================
-# ZAPIS DO CSV
+# ZAPIS DO CSV (z przecinkiem jako separator dziesiętny i średnikiem jako delimiter)
 # =====================
 
-# 1. Chunks (uint8)
+# 1. Chunks
 chunks_df = pd.DataFrame({'chunk': chunks})
 chunks_csv_path = os.path.join(log_path, "tx_bytes2chunks.csv")
-chunks_df.to_csv(chunks_csv_path, index=False)
+chunks_df.to_csv(chunks_csv_path, sep=';', index=False)
 print(f"Chunks zapisane do: {chunks_csv_path}")
 
 # 2. Symbols (complex)
@@ -36,17 +36,32 @@ symbols_df = pd.DataFrame({
     'imag': symbols.imag
 })
 symbols_csv_path = os.path.join(log_path, "tx_chunks2symbols.csv")
-symbols_df.to_csv(symbols_csv_path, index=False)
+symbols_df.to_csv(symbols_csv_path, sep=';', index=False, float_format='%.10f', decimal=',')
 print(f"Symbols zapisane do: {symbols_csv_path}")
 
 # 3. Filtered samples (complex)
+amplitude = np.abs(filtered)
+phase = np.angle(filtered)
+sample_index = np.arange(len(filtered))
+
 filtered_df = pd.DataFrame({
+    'sample_index': sample_index,
     'real': filtered.real,
-    'imag': filtered.imag
+    'imag': filtered.imag,
+    'amplitude': amplitude,
+    'phase_rad': phase
 })
+
 filtered_csv_path = os.path.join(log_path, "tx_rrc_filter.csv")
-filtered_df.to_csv(filtered_csv_path, index=False)
+filtered_df.to_csv(
+    filtered_csv_path,
+    sep=';',
+    index=False,
+    float_format='%.10f',
+    decimal=','
+)
 print(f"Filtered samples zapisane do: {filtered_csv_path}")
+
 
 # =====================
 # WYKRESY
