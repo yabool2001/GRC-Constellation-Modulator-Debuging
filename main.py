@@ -4,7 +4,8 @@ import os
 import pandas as pd
 
 # 🔧 Ścieżka do folderu logów
-log_path = "../../gnuradio/yabool2001"
+#log_path = "../../gnuradio/sandbox/Simple Squelch"
+log_path = "../../gnuradio/yabool2001/bpsk-modulator"
 
 # Ścieżki do plików binarnych
 file_bytes2chunks = os.path.join(log_path, "tx_bytes2chunks.8b")
